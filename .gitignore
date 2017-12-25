@@ -1,5 +1,4 @@
-MNIST_data/
 MNIST_data
 .vscode
-virtualenv/
 virtualenv
+temp
