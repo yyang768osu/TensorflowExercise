@@ -81,20 +81,32 @@ writer = tf.summary.FileWriter("./temp/")
 with tf.Session() as sess:
     writer.add_graph(sess.graph)
 
+# add summaries
+tf.summary.scalar('cross-entropy', cross_entropy)
+tf.summary.scalar('accuracy', accuracy)
+merged_summary = tf.summary.merge_all()
+
 # run
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
     for i in range(20000):
         batch = mnist.train.next_batch(50)
-        feed_dict={x: batch[0],
-                   y: batch[1],
-                   keep_prob: 1.0
-                   }
         if i % 10 == 0:
-            train_accuracy = accuracy.eval(feed_dict=feed_dict)
+            summary = sess.run(merged_summary, feed_dict={x: batch[0],
+                                                          y: batch[1],
+                                                          keep_prob: 1.0
+                                                          })
+            writer.add_summary(summary, i)
+
+            train_accuracy = accuracy.eval(feed_dict={x: batch[0],
+                                                      y: batch[1],
+                                                      keep_prob: 1.0
+                                                      })
             print("step: {}, accuracy: {}".format(i, train_accuracy))
-        #print("cross-entropy: {}".format(cross_entropy.eval(feed_dict=feed_dict)))
-        train_step.run(feed_dict=feed_dict)
+        train_step.run(feed_dict={x: batch[0],
+                                  y: batch[1],
+                                  keep_prob: 0.5
+                                  })
     test_accuracy = accuracy.eval(feed_dict={
         x: mnist.test.images,
         y: mnist.test.labels,
