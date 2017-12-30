@@ -14,9 +14,9 @@ mnist = input_data.read_data_sets('MNIST_data', one_hot=True)
 
 batch_size = 64
 leaky_relu_alpha = 0.2
-learning_rate = 0.00005
+learning_rate = 0.0002
 clip_value = 0.01
-n_critic = 5
+n_critic = 1
 
 
 def leaky_relu(x, alpha=leaky_relu_alpha):
@@ -34,7 +34,7 @@ def generator(is_training, batch_size, random_vector, reuse=True):
             net = tf.contrib.layers.batch_norm(inputs=net,
                                                decay=0.9,
                                                center=True,  # allow beta to be updated
-                                               scale=False,
+                                               scale=True,
                                                epsilon=0.001,
                                                updates_collections=None,
                                                is_training=is_training)
@@ -49,7 +49,7 @@ def generator(is_training, batch_size, random_vector, reuse=True):
             net = tf.contrib.layers.batch_norm(inputs=net,
                                                decay=0.9,
                                                center=True,  # allow beta to be updated
-                                               scale=False,
+                                               scale=True,
                                                epsilon=0.001,
                                                updates_collections=None,
                                                is_training=is_training)
@@ -72,7 +72,7 @@ def generator(is_training, batch_size, random_vector, reuse=True):
             net = tf.contrib.layers.batch_norm(inputs=net,
                                                decay=0.9,
                                                center=True,  # allow beta to be updated
-                                               scale=False,
+                                               scale=True,
                                                epsilon=0.001,
                                                updates_collections=None,
                                                is_training=is_training)
@@ -220,7 +220,7 @@ with tf.Session() as sess:
     sess.run(clip_discriminator)
     counter = 0
     while mnist.train.epochs_completed < 5:
-        print('Epoch idx: {}, Sample idx: {}'.format(mnist.train.epochs_completed, mnist.train._index_in_epoch))
+        print('Epoch idx: {}, Batch idx: {}, Epoch Percentage: {}%'.format(mnist.train.epochs_completed, counter, 100*64*float(counter)/mnist.train.num_examples))
 
         random_vector_samples = np.random.uniform(-1, 1, size=(batch_size, 10))
         true_image_samples = mnist.train.next_batch(batch_size)[0].reshape(batch_size, 28, 28, 1)
