@@ -158,7 +158,7 @@ def discriminator(is_training, batch_size, image_input, reuse=True):
 
 def clipping(var_list):
     with tf.name_scope('clipping'):
-        return [tf.clip_by_value(var, -clip_value, clip_value) for var in var_list]
+        return [var.assign(tf.clip_by_value(var, -clip_value, clip_value)) for var in var_list]
 
 
 random_vector = tf.placeholder(shape=[batch_size, 10],
