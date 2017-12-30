@@ -198,9 +198,9 @@ discriminator_trainable_var = [
 
 clip_discriminator = clipping(discriminator_trainable_var)
 
-inner_loop_trainer = tf.train.RMSPropOptimizer(learning_rate=learning_rate).minimize(
+inner_loop_trainer = tf.train.AdamOptimizer(learning_rate=learning_rate, beta1=0.5).minimize(
     loss=inner_loop_min_goal, var_list=discriminator_trainable_var)
-outer_loop_trainer = tf.train.RMSPropOptimizer(learning_rate=learning_rate).minimize(
+outer_loop_trainer = tf.train.AdamOptimizer(learning_rate=learning_rate*5, beta1=0.5).minimize(
     loss=outer_loop_min_goal, var_list=generator_trainable_var)
 
 
